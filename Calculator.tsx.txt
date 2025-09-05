@@ -1,0 +1,91 @@
+import { useState } from "react";
+
+export default function Calculator() {
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [dose, setDose] = useState("");
+  const [showAI, setShowAI] = useState(false);
+  const [aiInput, setAiInput] = useState("");
+  const [aiChat, setAiChat] = useState<string[]>([]);
+
+  const calcDose = () => {
+    if (!height || !weight) return;
+    const w = Number(weight);
+    const result = (w * 2).toFixed(1); // مثال: بروبوفول 2 mg/kg
+    setDose(result);
+  };
+
+  const sendToAI = () => {
+    if (!aiInput) return;
+    // ⚠️ هذا مكان استدعاء API الذكاء الاصطناعي (OpenAI, HuggingFace, أو API خاص بك)
+    // حالياً مجرد محاكاة للرد
+    const fakeReply = `🤖 AI: تحليل الوزن ${weight}كغ والطول ${height}سم → الجرعة المقترحة ${dose || "لم تُحسب بعد"}`;
+    setAiChat([...aiChat, `👨‍⚕️: ${aiInput}`, fakeReply]);
+    setAiInput("");
+  };
+
+  return (
+    <div className="border p-4 rounded space-y-4">
+      <h2 className="font-semibold text-lg">🧍‍♂️ بيانات المريض</h2>
+      
+      <input
+        type="number"
+        placeholder="الطول (سم)"
+        className="border p-2 w-full rounded"
+        value={height}
+        onChange={(e) => setHeight(e.target.value)}
+      />
+      
+      <input
+        type="number"
+        placeholder="الوزن (كغ)"
+        className="border p-2 w-full rounded"
+        value={weight}
+        onChange={(e) => setWeight(e.target.value)}
+      />
+      
+      <button
+        className="bg-indigo-600 text-white px-4 py-2 rounded"
+        onClick={calcDose}
+      >
+        حساب الجرعة
+      </button>
+      
+      {dose && <p className="text-lg">💉 الجرعة المقترحة: {dose} mg</p>}
+
+      <button
+        className="bg-green-600 text-white px-4 py-2 rounded"
+        onClick={() => setShowAI(!showAI)}
+      >
+        💬 شات مع الذكاء الاصطناعي الطبي
+      </button>
+
+      {showAI && (
+        <div className="border p-3 rounded bg-gray-50 space-y-3">
+          <div className="h-40 overflow-y-auto border p-2 rounded bg-white">
+            {aiChat.length === 0 && <p className="text-gray-400">لا يوجد محادثة بعد...</p>}
+            {aiChat.map((msg, i) => (
+              <p key={i} className="mb-1">{msg}</p>
+            ))}
+          </div>
+
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              placeholder="اكتب استفسارك..."
+              className="border p-2 flex-1 rounded"
+              value={aiInput}
+              onChange={(e) => setAiInput(e.target.value)}
+            />
+            <button
+              className="bg-blue-600 text-white px-3 py-2 rounded"
+              onClick={sendToAI}
+            >
+              إرسال
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+      }

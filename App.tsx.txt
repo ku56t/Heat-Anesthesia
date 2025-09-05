@@ -1,0 +1,60 @@
+import { useState } from "react";
+import Calculator from "./Calculator";
+import AdminPanel from "./AdminPanel";
+
+export default function App() {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [usernameInput, setUsernameInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+
+  if (isAdmin && loggedIn) {
+    return <AdminPanel onLogout={() => { setLoggedIn(false); setIsAdmin(false); }} />;
+  }
+
+  return (
+    <div className="p-6 space-y-6 max-w-md mx-auto">
+      <h1 className="text-2xl font-bold">📊 نظام حساب جرعة التخدير</h1>
+
+      <Calculator />
+
+      <button
+        className="bg-blue-600 text-white px-4 py-2 rounded mt-4"
+        onClick={() => setIsAdmin(true)}
+      >
+        الدخول كمدير (Admin)
+      </button>
+
+      {isAdmin && !loggedIn && (
+        <div className="mt-4 space-y-2">
+          <input
+            type="text"
+            placeholder="اسم المستخدم"
+            className="border p-2 w-full rounded"
+            value={usernameInput}
+            onChange={(e) => setUsernameInput(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="كلمة المرور"
+            className="border p-2 w-full rounded"
+            value={passwordInput}
+            onChange={(e) => setPasswordInput(e.target.value)}
+          />
+          <button
+            className="bg-green-600 text-white px-4 py-2 rounded w-full"
+            onClick={() => {
+              if (usernameInput === "admin" && passwordInput === "mustafa@2006#2") {
+                setLoggedIn(true);
+              } else {
+                alert("❌ خطأ في تسجيل الدخول");
+              }
+            }}
+          >
+            تسجيل الدخول
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}

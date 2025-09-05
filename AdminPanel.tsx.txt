@@ -1,0 +1,50 @@
+import { useState } from "react";
+
+interface AdminPanelProps {
+  onLogout: () => void;
+}
+
+export default function AdminPanel({ onLogout }: AdminPanelProps) {
+  const [rights, setRights] = useState(
+    localStorage.getItem("rights") || "© 2025 Anesthesia App"
+  );
+  const [message, setMessage] = useState("");
+
+  const saveSettings = () => {
+    localStorage.setItem("rights", rights);
+    setMessage("✅ تم حفظ التغييرات");
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  return (
+    <div className="p-6 space-y-6 max-w-md mx-auto">
+      <h1 className="text-xl font-bold">⚙️ لوحة التحكم</h1>
+
+      <div className="space-y-2">
+        <label className="block font-medium">حقوق النشر (Footer):</label>
+        <input
+          type="text"
+          className="border p-2 w-full rounded"
+          value={rights}
+          onChange={(e) => setRights(e.target.value)}
+        />
+        <button
+          className="bg-green-600 text-white px-4 py-2 rounded"
+          onClick={saveSettings}
+        >
+          حفظ
+        </button>
+        {message && <p className="text-green-600 mt-2">{message}</p>}
+      </div>
+
+      <div className="mt-6 space-y-2">
+        <button
+          className="bg-red-600 text-white px-4 py-2 rounded w-full"
+          onClick={onLogout}
+        >
+          تسجيل الخروج
+        </button>
+      </div>
+    </div>
+  );
+}
