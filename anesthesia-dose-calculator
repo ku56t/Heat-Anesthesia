@@ -1,0 +1,93 @@
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
+export default function AnesthesiaApp() {
+  const [patient, setPatient] = useState({
+    name: "",
+    age: "",
+    height: "",
+    weight: "",
+    asa: "",
+  });
+
+  const [notes, setNotes] = useState("");
+
+  return (
+    <div className="p-6 space-y-6">
+      <h1 className="text-2xl font-bold">📊 نظام حساب جرعة التخدير</h1>
+
+      {/* زر إدخال بيانات المريض */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button>➕ إدخال بيانات المريض</Button>
+        </DialogTrigger>
+        <DialogContent className="space-y-4">
+          <div>
+            <Label>الاسم</Label>
+            <Input value={patient.name} onChange={e => setPatient({ ...patient, name: e.target.value })} />
+          </div>
+          <div>
+            <Label>العمر</Label>
+            <Input type="number" value={patient.age} onChange={e => setPatient({ ...patient, age: e.target.value })} />
+          </div>
+          <div>
+            <Label>الطول (سم)</Label>
+            <Input type="number" value={patient.height} onChange={e => setPatient({ ...patient, height: e.target.value })} />
+          </div>
+          <div>
+            <Label>الوزن (كغ)</Label>
+            <Input type="number" value={patient.weight} onChange={e => setPatient({ ...patient, weight: e.target.value })} />
+          </div>
+          <div>
+            <Label>ASA</Label>
+            <Input value={patient.asa} onChange={e => setPatient({ ...patient, asa: e.target.value })} />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* زر الأدوية */}
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button>💊 الأدوية</Button>
+        </SheetTrigger>
+        <SheetContent side="right" className="p-4 space-y-3">
+          <h2 className="font-semibold">الأدوية والجرعات</h2>
+          <ul className="list-disc list-inside text-sm">
+            <li>Propofol: 2 mg/kg</li>
+            <li>Fentanyl: 1.5 mcg/kg</li>
+            <li>Midazolam: 0.03 mg/kg</li>
+            <li>Rocuronium: 0.6 mg/kg</li>
+          </ul>
+        </SheetContent>
+      </Sheet>
+
+      {/* زر الذكاء الاصطناعي */}
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button>🤖 استشارة الذكاء الاصطناعي</Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="p-4 space-y-3">
+          <h2 className="font-semibold">ملاحظات</h2>
+          <textarea
+            className="w-full border p-2 rounded"
+            rows={5}
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+          />
+          <Button onClick={() => alert("📡 تم إرسال الاستشارة الذكية!")}>
+            إرسال
+          </Button>
+        </SheetContent>
+      </Sheet>
+
+      {/* زر تسليم الحالة للطبيب */}
+      <Button onClick={() => alert("✅ تم تسليم الحالة للطبيب")}>
+        ⚡ تسليم الحالة للطبيب
+      </Button>
+    </div>
+  );
+}
