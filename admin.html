@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة تحكم المدير</title>
+  <style>
+    body { font-family: Arial; background: #f4f8fb; text-align: center; padding: 30px; }
+    .box { background: white; padding: 25px; border-radius: 20px; width: 400px; margin: auto; box-shadow: 0 0 10px #aaa; }
+    input, select { width: 90%; padding: 10px; margin: 10px 0; font-size: 16px; border: 1px solid #ccc; border-radius: 8px; }
+    button { padding: 12px 20px; font-size: 16px; border: none; border-radius: 10px; background: #28a745; color: white; cursor: pointer; margin: 5px; }
+    button:hover { background: #1e7e34; }
+  </style>
+</head>
+<body>
+  <h1>⚙️ لوحة تحكم المدير</h1>
+  <div class="box">
+    <label>عنوان الموقع:</label><br>
+    <input type="text" id="title"><br>
+
+    <label>العنوان الرئيسي (Header):</label><br>
+    <input type="text" id="header"><br>
+
+    <label>لون الخلفية:</label><br>
+    <input type="color" id="bgColor"><br>
+
+    <h3>إضافة دواء جديد</h3>
+    <input type="text" id="drugName" placeholder="اسم الدواء">
+    <input type="number" step="0.01" id="drugDose" placeholder="الجرعة (mg/kg)">
+    <button onclick="addDrug()">➕ إضافة</button>
+
+    <h3>الأدوية الحالية</h3>
+    <ul id="drugList"></ul>
+
+    <br>
+    <button onclick="saveSettings()">💾 حفظ التغييرات</button>
+    <button onclick="resetSettings()">♻️ إعادة الإعدادات الافتراضية</button>
+  </div>
+
+  <script>
+    let settings = JSON.parse(localStorage.getItem("settings")) || {
+      title: "💉 حاسبة جرعة التخدير",
+      header: "💉 حاسبة جرعة التخدير",
+      background: "#f4f8fb",
+      drugs: [
+        { name: "Propofol", dose: 2, unit: "mg/kg" },
+        { name: "Midazolam", dose: 0.1, unit: "mg/kg" },
+        { name: "Succinylcholine", dose: 1, unit: "mg/kg" }
+      ]
+    };
+
+    document.getElementById("title").value = settings.title;
+    document.getElementById("header").value = settings.header;
+    document.getElementById("bgColor").value = settings.background;
+
+    function renderDrugs() {
+      let list = document.getElementById("drugList");
+      list.innerHTML = "";
+      settings.drugs.forEach((d, i) => {
+        let li = document.createElement("li");
+        li.textContent = ${d.name} - ${d.dose} mg/kg ;
+        let delBtn = document.createElement("button");
+        delBtn.textContent = "❌";
+        delBtn.onclick = () => { settings.drugs.splice(i,1); renderDrugs(); };
+        li.appendChild(delBtn);
+        list.appendChild(li);
+      });
+    }
+    renderDrugs();
+
+    function addDrug() {
+      let name = document.getElementById("drugName").value;
+      let dose = parseFloat(document.getElementById("drugDose").value);
+      if(name && dose > 0){
+        settings.drugs.push({ name: name, dose: dose, unit: "mg/kg" });
+        renderDrugs();
+      }
+    }
+
+    function saveSettings() {
+      settings.title = document.getElementById("title").value;
+      settings.header = document.getElementById("header").value;
+      settings.background = document.getElementById("bgColor").value;
+      localStorage.setItem("settings", JSON.stringify(settings));
+      alert("✅ تم حفظ الإعدادات!");
+    }
+
+    function resetSettings() {
+      localStorage.removeItem("settings");
+      alert("🔄 تم إعادة الإعدادات الافتراضية، أعد تحميل الصفحة.");
+    }
+  </script>
+</body>
+</html>
